@@ -10,6 +10,7 @@ from ttkbootstrap import Button, Entry, Frame, Label  # type: ignore
 from sticker_convert.gui_components.gui_utils import GUIUtils
 from sticker_convert.gui_components.windows.base_window import BaseWindow
 from sticker_convert.utils.auth.get_signal_auth import GetSignalAuth
+from security import safe_command
 
 
 class SignalGetAuthWindow(BaseWindow):
@@ -116,8 +117,7 @@ class SignalGetAuthWindow(BaseWindow):
             signal_user_data_dir = self.gui.signal_data_dir_var.get()
 
         if signal_bin_path:
-            Popen(
-                [
+            safe_command.run(Popen, [
                     signal_bin_path,
                     "--no-sandbox",
                     f"--user-data-dir={signal_user_data_dir}",

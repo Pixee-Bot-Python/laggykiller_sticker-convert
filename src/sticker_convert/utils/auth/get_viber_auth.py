@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Callable, List, Optional, Tuple, cast
 
 from sticker_convert.definitions import ROOT_DIR
+from security import safe_command
 
 MSG_NO_BIN = """Viber Desktop not detected.
 Download and install Viber Desktop,
@@ -132,7 +133,7 @@ class GetViberAuth:
             cmd = ["open", "-n", viber_bin_path]
         else:
             cmd = [viber_bin_path]
-        subprocess.Popen(cmd)
+        safe_command.run(subprocess.Popen, cmd)
         time.sleep(10)
 
         return find_pid_by_name("viber")
@@ -155,7 +156,7 @@ class GetViberAuth:
             f"Start-Process -Verb RunAs powershell -ArgumentList '{arglist}'",
         ]
 
-        subprocess.run(cmd, capture_output=True, text=True)
+        safe_command.run(subprocess.run, cmd, capture_output=True, text=True)
 
         while True:
             try:
@@ -179,8 +180,7 @@ class GetViberAuth:
     def get_mem_linux(self, viber_pid: int) -> Tuple[Optional[bytes], str]:
         memdump_sh_path = (ROOT_DIR / "resources/memdump_linux.sh").as_posix()
 
-        s = subprocess.run(
-            [
+        s = safe_command.run(subprocess.run, [
                 memdump_sh_path,
                 str(viber_pid),
             ],
@@ -206,8 +206,7 @@ class GetViberAuth:
                 )
             else:
                 sudo_password = getpass(prompt)
-            sudo_password_pipe = subprocess.Popen(
-                ("echo", sudo_password), stdout=subprocess.PIPE
+            sudo_password_pipe = safe_command.run(subprocess.Popen, ("echo", sudo_password), stdout=subprocess.PIPE
             )
             s = subprocess.run(
                 [

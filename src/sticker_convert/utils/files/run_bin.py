@@ -4,6 +4,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from typing import Any, Callable, List, Tuple, Union
+from security import safe_command
 
 
 class RunBin:
@@ -41,8 +42,7 @@ class RunBin:
             return False, ""
 
         # sp = subprocess.Popen(cmd_list, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        sp = subprocess.run(
-            cmd_list,
+        sp = safe_command.run(subprocess.run, cmd_list,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
