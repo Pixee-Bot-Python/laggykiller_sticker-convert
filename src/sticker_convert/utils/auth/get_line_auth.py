@@ -71,7 +71,7 @@ class GetLineAuth:
             params=params,
             cookies=cookies,  # type: ignore
             headers=headers,
-        )
+        timeout=60)
 
         response_dict = json.loads(response.text)
 
