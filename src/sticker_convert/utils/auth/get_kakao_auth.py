@@ -8,6 +8,7 @@ from urllib.parse import parse_qs, urlparse
 import requests
 
 from sticker_convert.job_option import CredOption
+from security import safe_requests
 
 
 class GetKakaoAuth:
@@ -233,7 +234,7 @@ class GetKakaoAuth:
     def passcode_callback(self) -> bool:
         self.cb_msg("Passcode callback")
 
-        response = requests.get(
+        response = safe_requests.get(
             "https://katalk.kakao.com/android/account2/passcode/callback",
             headers=self.headers,
         )

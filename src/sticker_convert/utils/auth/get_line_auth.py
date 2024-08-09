@@ -3,9 +3,8 @@ import json
 import platform
 from http.cookiejar import CookieJar
 from typing import Any, Callable, Dict, List, Optional, Union
-
-import requests
 import rookiepy
+from security import safe_requests
 
 
 class GetLineAuth:
@@ -66,7 +65,7 @@ class GetLineAuth:
 
         params = {"text": "test"}
 
-        response = requests.get(
+        response = safe_requests.get(
             "https://store.line.me/api/custom-sticker/validate/13782/en",
             params=params,
             cookies=cookies,  # type: ignore
