@@ -11,6 +11,7 @@ from ttkbootstrap import Button, Entry, Frame, Label  # type: ignore
 from sticker_convert.gui_components.gui_utils import GUIUtils
 from sticker_convert.gui_components.windows.base_window import BaseWindow
 from sticker_convert.utils.auth.get_viber_auth import GetViberAuth
+from security import safe_command
 
 
 class ViberGetAuthWindow(BaseWindow):
@@ -136,7 +137,7 @@ class ViberGetAuthWindow(BaseWindow):
             viber_bin_path = self.gui.viber_auth_var.get()
 
         if viber_bin_path:
-            Popen([viber_bin_path])
+            safe_command.run(Popen, [viber_bin_path])
         else:
             self.cb_msg_block_viber("Error: Viber Desktop not installed.")
 
