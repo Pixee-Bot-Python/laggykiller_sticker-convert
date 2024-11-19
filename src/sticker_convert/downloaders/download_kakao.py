@@ -16,6 +16,7 @@ from sticker_convert.job_option import CredOption
 from sticker_convert.utils.callback import CallbackProtocol, CallbackReturn
 from sticker_convert.utils.files.metadata_handler import MetadataHandler
 from sticker_convert.utils.media.decrypt_kakao import DecryptKakao
+from security import safe_requests
 
 JSINJECT = """
 class osclass {
@@ -64,7 +65,7 @@ class MetadataKakao:
     def get_pack_info_unauthed(
         pack_title: str,
     ) -> Optional[dict[str, Any]]:
-        pack_meta_r = requests.get(f"https://e.kakao.com/api/v1/items/t/{pack_title}")
+        pack_meta_r = safe_requests.get(f"https://e.kakao.com/api/v1/items/t/{pack_title}")
 
         if pack_meta_r.status_code == 200:
             pack_meta = json.loads(pack_meta_r.text)
@@ -110,7 +111,7 @@ class DownloadKakao(DownloadBase):
     def get_info_from_share_link(self, url: str) -> Tuple[Optional[str], Optional[str]]:
         headers = {"User-Agent": "Android"}
 
-        response = requests.get(url, headers=headers)
+        response = safe_requests.get(url, headers=headers)
         soup = BeautifulSoup(response.content.decode("utf-8", "ignore"), "html.parser")
 
         pack_title_tag = soup.find("title")  # type: ignore
@@ -244,7 +245,7 @@ class DownloadKakao(DownloadBase):
             if not self.pack_info_unauthed:
                 public_url = None
                 if urlparse(self.url).netloc == "emoticon.kakao.com":
-                    r = requests.get(self.url)
+                    r = safe_requests.get(self.url)
                     # Share url would redirect to public url without headers
                     public_url = r.url
                 elif urlparse(self.url).netloc == "e.kakao.com":
@@ -262,7 +263,7 @@ class DownloadKakao(DownloadBase):
         play_ext = ""
         if play_path_format is None:
             for play_type, play_ext in itertools.product(play_types, play_exts):
-                r = requests.get(
+                r = safe_requests.get(
                     f"https://item.kakaocdn.net/dw/{item_code}.{play_type}_001{play_ext}"
                 )
                 if r.ok:
@@ -278,7 +279,7 @@ class DownloadKakao(DownloadBase):
         sound_ext = ""
         if sound_path_format is None:
             for sound_ext in sound_exts:
-                r = requests.get(
+                r = safe_requests.get(
                     f"https://item.kakaocdn.net/dw/{item_code}.sound_001{sound_ext}"
                 )
                 if r.ok:
