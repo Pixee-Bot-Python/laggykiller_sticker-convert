@@ -79,8 +79,8 @@ class MetadataLine:
         pack_id: str, region: str
     ) -> Optional[Tuple[str, str, List[Dict[str, Any]], str, bool]]:
         pack_meta_r = requests.get(
-            f"https://stickershop.line-scdn.net/sticonshop/v1/{pack_id}/sticon/iphone/meta.json"
-        )
+            f"https://stickershop.line-scdn.net/sticonshop/v1/{pack_id}/sticon/iphone/meta.json", 
+        timeout=60)
 
         if pack_meta_r.status_code == 200:
             pack_meta = json.loads(pack_meta_r.text)
@@ -91,8 +91,8 @@ class MetadataLine:
             region = "en"
 
         pack_store_page = requests.get(
-            f"https://store.line.me/emojishop/product/{pack_id}/{region}"
-        )
+            f"https://store.line.me/emojishop/product/{pack_id}/{region}", 
+        timeout=60)
 
         if pack_store_page.status_code != 200:
             return None
@@ -123,8 +123,8 @@ class MetadataLine:
         pack_id: str, region: str
     ) -> Optional[Tuple[str, str, List[Dict[str, Any]], str, bool]]:
         pack_meta_r = requests.get(
-            f"https://stickershop.line-scdn.net/stickershop/v1/product/{pack_id}/android/productInfo.meta"
-        )
+            f"https://stickershop.line-scdn.net/stickershop/v1/product/{pack_id}/android/productInfo.meta", 
+        timeout=60)
 
         if pack_meta_r.status_code == 200:
             pack_meta = json.loads(pack_meta_r.text)
@@ -363,7 +363,7 @@ class DownloadLine(DownloadBase):
             params=params,
             cookies=self.cookies,
             headers=self.headers,
-        )
+        timeout=60)
 
         response_dict = json.loads(response.text)
 

@@ -133,7 +133,7 @@ class UploadViber(UploadBase):
                         "file_icon": ("color_icon.png", g),
                     },
                     data=upload_data,
-                )
+                timeout=60)
 
             if r.ok:
                 rjson = json.loads(r.text)
