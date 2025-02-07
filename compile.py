@@ -6,6 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
+from security import safe_command
 
 sys.path.append("./src")
 from sticker_convert import __version__
@@ -19,11 +20,10 @@ def osx_run_in_venv(cmd: str, get_stdout: bool = False) -> Optional[str]:
     venv_cmd = "source venv/bin/activate && "
 
     if get_stdout:
-        return subprocess.run(
-            sh_cmd + [venv_cmd + cmd], stdout=subprocess.PIPE
+        return safe_command.run(subprocess.run, sh_cmd + [venv_cmd + cmd], stdout=subprocess.PIPE
         ).stdout.decode()
     else:
-        subprocess.run(sh_cmd + [venv_cmd + cmd])
+        safe_command.run(subprocess.run, sh_cmd + [venv_cmd + cmd])
 
     return None
 
@@ -70,7 +70,7 @@ def nuitka(python_bin: str) -> None:
     if platform.system() == "Darwin":
         osx_run_in_venv(" ".join(cmd_list))
     else:
-        subprocess.run(cmd_list, shell=True)
+        safe_command.run(subprocess.run, cmd_list, shell=True)
 
 
 def win_patch() -> None:
@@ -104,20 +104,17 @@ def compile() -> None:
     shutil.make_archive(ios_stickers_path, "zip", ios_stickers_path)
 
     if platform.system() == "Windows":
-        subprocess.run(
-            f"{python_bin} -m pip install --upgrade pip".split(" "), shell=True
+        safe_command.run(subprocess.run, f"{python_bin} -m pip install --upgrade pip".split(" "), shell=True
         )
-        subprocess.run(
-            f"{python_bin} -m pip install -r requirements-build.txt".split(" "),
+        safe_command.run(subprocess.run, f"{python_bin} -m pip install -r requirements-build.txt".split(" "),
             shell=True,
         )
-        subprocess.run(
-            f"{python_bin} -m pip install -r requirements.txt".split(" "), shell=True
+        safe_command.run(subprocess.run, f"{python_bin} -m pip install -r requirements.txt".split(" "), shell=True
         )
     elif platform.system() == "Darwin":
         shutil.rmtree("venv", ignore_errors=True)
-        subprocess.run(f"{python_bin} -m pip install --upgrade pip delocate".split(" "))
-        subprocess.run(f"{python_bin} -m venv venv".split(" "))
+        safe_command.run(subprocess.run, f"{python_bin} -m pip install --upgrade pip delocate".split(" "))
+        safe_command.run(subprocess.run, f"{python_bin} -m venv venv".split(" "))
         python_bin = "python"
         osx_run_in_venv("python -m pip install -r requirements-build.txt")
         osx_run_in_venv(
