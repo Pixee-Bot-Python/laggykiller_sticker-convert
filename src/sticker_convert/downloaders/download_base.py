@@ -10,6 +10,7 @@ import requests
 
 from sticker_convert.job_option import CredOption
 from sticker_convert.utils.callback import CallbackProtocol, CallbackReturn
+from security import safe_requests
 
 
 class DownloadBase:
@@ -55,7 +56,7 @@ class DownloadBase:
     ) -> None:
         for retry in range(retries):
             try:
-                response = requests.get(url, allow_redirects=True, **kwargs)
+                response = safe_requests.get(url, allow_redirects=True, **kwargs)
 
                 if not response.ok:
                     self.cb.put("update_bar")
@@ -89,7 +90,7 @@ class DownloadBase:
 
         for retry in range(retries):
             try:
-                response = requests.get(
+                response = safe_requests.get(
                     url, stream=True, allow_redirects=True, **kwargs
                 )
                 if not response.ok:
