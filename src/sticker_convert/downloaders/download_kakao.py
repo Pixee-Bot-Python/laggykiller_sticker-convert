@@ -50,7 +50,7 @@ class MetadataKakao:
             "https://talk-pilsner.kakao.com/emoticon/item_store/instant_search",
             headers=headers,
             data=data,
-        )
+        timeout=60)
 
         if response.status_code != 200:
             return None
@@ -64,7 +64,7 @@ class MetadataKakao:
     def get_pack_info_unauthed(
         pack_title: str,
     ) -> Optional[dict[str, Any]]:
-        pack_meta_r = requests.get(f"https://e.kakao.com/api/v1/items/t/{pack_title}")
+        pack_meta_r = requests.get(f"https://e.kakao.com/api/v1/items/t/{pack_title}", timeout=60)
 
         if pack_meta_r.status_code == 200:
             pack_meta = json.loads(pack_meta_r.text)
@@ -87,7 +87,7 @@ class MetadataKakao:
         response = requests.post(
             f"https://talk-pilsner.kakao.com/emoticon/api/store/v3/items/{item_code}",
             headers=headers,
-        )
+        timeout=60)
 
         if response.status_code != 200:
             return None
@@ -110,7 +110,7 @@ class DownloadKakao(DownloadBase):
     def get_info_from_share_link(self, url: str) -> Tuple[Optional[str], Optional[str]]:
         headers = {"User-Agent": "Android"}
 
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=60)
         soup = BeautifulSoup(response.content.decode("utf-8", "ignore"), "html.parser")
 
         pack_title_tag = soup.find("title")  # type: ignore
@@ -244,7 +244,7 @@ class DownloadKakao(DownloadBase):
             if not self.pack_info_unauthed:
                 public_url = None
                 if urlparse(self.url).netloc == "emoticon.kakao.com":
-                    r = requests.get(self.url)
+                    r = requests.get(self.url, timeout=60)
                     # Share url would redirect to public url without headers
                     public_url = r.url
                 elif urlparse(self.url).netloc == "e.kakao.com":
@@ -263,8 +263,8 @@ class DownloadKakao(DownloadBase):
         if play_path_format is None:
             for play_type, play_ext in itertools.product(play_types, play_exts):
                 r = requests.get(
-                    f"https://item.kakaocdn.net/dw/{item_code}.{play_type}_001{play_ext}"
-                )
+                    f"https://item.kakaocdn.net/dw/{item_code}.{play_type}_001{play_ext}", 
+                timeout=60)
                 if r.ok:
                     break
             if play_ext == "":
@@ -279,8 +279,8 @@ class DownloadKakao(DownloadBase):
         if sound_path_format is None:
             for sound_ext in sound_exts:
                 r = requests.get(
-                    f"https://item.kakaocdn.net/dw/{item_code}.sound_001{sound_ext}"
-                )
+                    f"https://item.kakaocdn.net/dw/{item_code}.sound_001{sound_ext}", 
+                timeout=60)
                 if r.ok:
                     break
             if sound_ext != "":

@@ -55,7 +55,7 @@ class DownloadBase:
     ) -> None:
         for retry in range(retries):
             try:
-                response = requests.get(url, allow_redirects=True, **kwargs)
+                response = requests.get(url, allow_redirects=True, **kwargs, timeout=60)
 
                 if not response.ok:
                     self.cb.put("update_bar")
@@ -90,8 +90,8 @@ class DownloadBase:
         for retry in range(retries):
             try:
                 response = requests.get(
-                    url, stream=True, allow_redirects=True, **kwargs
-                )
+                    url, stream=True, allow_redirects=True, **kwargs, 
+                timeout=60)
                 if not response.ok:
                     return b""
                 total_length = int(response.headers.get("content-length"))  # type: ignore
