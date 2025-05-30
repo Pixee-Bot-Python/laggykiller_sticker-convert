@@ -5,14 +5,13 @@ from io import BytesIO
 from pathlib import Path
 from typing import Optional, Tuple, cast
 from urllib.parse import urlparse
-
-import requests
 from bs4 import BeautifulSoup
 
 from sticker_convert.downloaders.download_base import DownloadBase
 from sticker_convert.job_option import CredOption
 from sticker_convert.utils.callback import CallbackProtocol, CallbackReturn
 from sticker_convert.utils.files.metadata_handler import MetadataHandler
+from security import safe_requests
 
 
 class DownloadViber(DownloadBase):
@@ -20,7 +19,7 @@ class DownloadViber(DownloadBase):
     #     super().__init__(*args, **kwargs)
 
     def get_pack_info(self, url: str) -> Optional[Tuple[str, str]]:
-        r = requests.get(url, allow_redirects=True)
+        r = safe_requests.get(url, allow_redirects=True)
         soup = BeautifulSoup(r.text, "html.parser")
 
         is_custom = urlparse(url).path.startswith("/pages/custom-sticker-packs/")

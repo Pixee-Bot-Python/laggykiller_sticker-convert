@@ -9,8 +9,6 @@ from io import BytesIO
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from urllib import parse
-
-import requests
 from bs4 import BeautifulSoup
 from PIL import Image
 
@@ -20,6 +18,7 @@ from sticker_convert.utils.auth.get_line_auth import GetLineAuth
 from sticker_convert.utils.callback import CallbackProtocol, CallbackReturn
 from sticker_convert.utils.files.metadata_handler import MetadataHandler
 from sticker_convert.utils.media.apple_png_normalize import ApplePngNormalize
+from security import safe_requests
 
 # Reference: https://github.com/doubleplusc/Line-sticker-downloader/blob/master/sticker_dl.py
 
@@ -78,7 +77,7 @@ class MetadataLine:
     def get_metadata_sticon(
         pack_id: str, region: str
     ) -> Optional[Tuple[str, str, List[Dict[str, Any]], str, bool]]:
-        pack_meta_r = requests.get(
+        pack_meta_r = safe_requests.get(
             f"https://stickershop.line-scdn.net/sticonshop/v1/{pack_id}/sticon/iphone/meta.json"
         )
 
@@ -90,7 +89,7 @@ class MetadataLine:
         if region == "":
             region = "en"
 
-        pack_store_page = requests.get(
+        pack_store_page = safe_requests.get(
             f"https://store.line.me/emojishop/product/{pack_id}/{region}"
         )
 
@@ -122,7 +121,7 @@ class MetadataLine:
     def get_metadata_stickers(
         pack_id: str, region: str
     ) -> Optional[Tuple[str, str, List[Dict[str, Any]], str, bool]]:
-        pack_meta_r = requests.get(
+        pack_meta_r = safe_requests.get(
             f"https://stickershop.line-scdn.net/stickershop/v1/product/{pack_id}/android/productInfo.meta"
         )
 
@@ -358,7 +357,7 @@ class DownloadLine(DownloadBase):
     def get_name_text_key(self, sticker_text: str) -> Optional[str]:
         params = {"text": sticker_text}
 
-        response = requests.get(
+        response = safe_requests.get(
             f"https://store.line.me/api/custom-sticker/preview/{self.pack_id}/{self.region}",
             params=params,
             cookies=self.cookies,
