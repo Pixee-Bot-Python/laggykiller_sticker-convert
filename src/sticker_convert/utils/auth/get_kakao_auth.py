@@ -64,7 +64,7 @@ class GetKakaoAuth:
             "https://katalk.kakao.com/android/account2/login",
             headers=self.headers,
             json=json_data,
-        )
+        timeout=60)
 
         response_json = json.loads(response.text)
 
@@ -105,7 +105,7 @@ class GetKakaoAuth:
             "https://katalk.kakao.com/android/account2/phone-number",
             headers=self.headers,
             json=json_data,
-        )
+        timeout=60)
 
         response_json = json.loads(response.text)
 
@@ -128,8 +128,8 @@ class GetKakaoAuth:
         self.cb_msg("Verification by sending SMS")
 
         response = requests.post(
-            "https://katalk.kakao.com/android/account2/mo-sent", headers=self.headers
-        )
+            "https://katalk.kakao.com/android/account2/mo-sent", headers=self.headers, 
+        timeout=60)
 
         response_json = json.loads(response.text)
 
@@ -145,8 +145,8 @@ class GetKakaoAuth:
             input(prompt)
 
         response = requests.post(
-            "https://katalk.kakao.com/android/account2/mo-confirm", headers=self.headers
-        )
+            "https://katalk.kakao.com/android/account2/mo-confirm", headers=self.headers, 
+        timeout=60)
 
         response_json = json.loads(response.text)
 
@@ -175,7 +175,7 @@ class GetKakaoAuth:
             "https://katalk.kakao.com/android/account2/passcode",
             headers=self.headers,
             json=json_data,
-        )
+        timeout=60)
 
         response_json = json.loads(response.text)
 
@@ -220,7 +220,7 @@ class GetKakaoAuth:
             "https://katalk.kakao.com/android/account2/confirm-device-change",
             headers=headers_browser,
             json=json_data,
-        )
+        timeout=60)
 
         response_json = json.loads(response.text)
 
@@ -236,7 +236,7 @@ class GetKakaoAuth:
         response = requests.get(
             "https://katalk.kakao.com/android/account2/passcode/callback",
             headers=self.headers,
-        )
+        timeout=60)
 
         response_json = json.loads(response.text)
 
@@ -265,7 +265,7 @@ class GetKakaoAuth:
             "https://katalk.kakao.com/android/account2/profile",
             headers=self.headers,
             json=json_data,
-        )
+        timeout=60)
 
         response_json = json.loads(response.text)
 

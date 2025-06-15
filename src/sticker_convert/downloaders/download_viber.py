@@ -20,7 +20,7 @@ class DownloadViber(DownloadBase):
     #     super().__init__(*args, **kwargs)
 
     def get_pack_info(self, url: str) -> Optional[Tuple[str, str]]:
-        r = requests.get(url, allow_redirects=True)
+        r = requests.get(url, allow_redirects=True, timeout=60)
         soup = BeautifulSoup(r.text, "html.parser")
 
         is_custom = urlparse(url).path.startswith("/pages/custom-sticker-packs/")
